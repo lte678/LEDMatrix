@@ -1,0 +1,1 @@
+ADD_LIBRARY(ws281x STATIC dma.c mailbox.c pcm.c pwm.c rpihw.c ws2811.c)

@@ -1,0 +1,11 @@
+[Unit]
+Description=LED matrix display service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=3
+ExecStart=/usr/local/bin/matrix
+
+[Install]
+WantedBy=multi-user.target

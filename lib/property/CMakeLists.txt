@@ -1,0 +1,1 @@
+add_library(property STATIC Property.cpp)

@@ -1,0 +1,1 @@
+add_library(fastnoise STATIC FastNoise.cpp)
