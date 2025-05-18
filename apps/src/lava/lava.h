@@ -7,35 +7,50 @@
 
 #include "MatrixApp.h"
 #include "MatrixDefines.h"
+#include "AACanvas.h"
 
 #include <cstdlib>
-#include <math.h>
+#include <cmath>
 
 class LavaApp : public MatrixApp {
 private:
     class Blob {
     public:
+        // State variables
         float x;
         float y;
         float velocity;
         float angle;
         float strength;
 
-        Blob();
+        // Runtime constants
+        float maxVelocity;
+        float jitter;
+        float scale;
 
-        float valueFunction(int _x, int _y);
+    public:
+        Blob(float _maxVelocity, float _jitter, float _scale);
+
+        float valueFunction(float _x, float _y) const;
+        void updateBlob(float dt);
+        bool outOfBounds() const;
     };
 public:
-    LavaApp(matrix_t *inMatrix);
+    explicit LavaApp(matrix_t *inMatrix);
 
-    virtual void drawFrame(float dt);
-    float getPixelValue(int x, int y);
-
+    void initApp() override;
+    void drawFrame(float dt) override;
+    float getPixelValue(float x, float y);
 private:
     FloatProperty m_FlowRate;
     FloatProperty m_Size;
+    FloatProperty m_Jitter;
+    IntProperty m_NumberBlobs;
+    ColorProperty m_BlobColor;
 
-    std::vector<>
+    std::vector<Blob> m_blobs;
+
+    AACanvas canvas;
 };
 
 extern "C" MatrixApp* create(matrix_t *inMatrix) {

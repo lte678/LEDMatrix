@@ -52,12 +52,32 @@ protected:
         }
     }
 
+    static float random_float(float end) {
+        return random_float(0.0f, end);
+    }
+
+    static float random_float(float start, float end) {
+        float r_norm = (float)rand() / (float)RAND_MAX;
+        return start + r_norm * (end - start);
+    }
+
     static pixel_t randomRGB() {
         return pixel_t(rand() % 256, rand() % 256, rand() % 256, 0);
     }
 
     static pixel_t randomRGBW() {
         return pixel_t(rand() % 256, rand() % 256, rand() % 256, rand() % 256);
+    }
+
+    static float lerp(float a, float b, float x) {
+        return (a * (1.0f - x)) + (b * x);
+    }
+
+    static pixel_t lerpColor(pixel_t a, pixel_t b, float x) {
+        return pixel_t((u_char)lerp(a.r, b.r, x),
+                       (u_char)lerp(a.g, b.g, x),
+                       (u_char)lerp(a.b, b.b, x),
+                       (u_char)lerp(a.w, b.w, x));
     }
 
     FloatProperty m_FrameRate;

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.10)
 
 project(matrix_apps)
 
@@ -24,5 +24,6 @@ add_subdirectory(src/sparkles)
 add_subdirectory(src/scrolltext)
 add_subdirectory(src/glow)
 add_subdirectory(src/wipe)
-add_subdirectory(src/lightspeed)
+#add_subdirectory(src/lightspeed)
+add_subdirectory(src/lava)
 #add_subdirectory(src/pong)
