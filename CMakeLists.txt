@@ -11,6 +11,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 if(NOT USE_SOFTWARE_MATRIX)
     add_subdirectory(lib/ws281x)
 else()
+    add_subdirectory(lib/SDL)
     add_compile_definitions(USE_SOFTWARE_MATRIX)
 endif()
 

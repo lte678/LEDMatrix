@@ -20,7 +20,9 @@ add_executable(matrix_core ${SOURCE_FILES})
 add_subdirectory(Commands)
 set_target_properties(matrix_core PROPERTIES OUTPUT_NAME matrix)
 
-if(NOT USE_SOFTWARE_MATRIX)
+if(USE_SOFTWARE_MATRIX)
+        target_link_libraries(matrix_core PRIVATE SDL3::SDL3)
+else()
         target_link_libraries(matrix_core ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_DL_LIBS} ws281x)
 endif()
 

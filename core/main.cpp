@@ -47,12 +47,17 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
+    std::string appPath = "/usr/local/share/matrix/apps/";
+    if(argc > 1) {
+        appPath = argv[1];
+    }
+
 #ifdef USE_SOFTWARE_MATRIX
     auto matrix = std::make_unique<SoftwareMatrix>();
 #else
     auto matrix = std::make_unique<HardwareMatrix>(GPIO_PIN);
 #endif
-    g_MatrixManager = new MatrixManager(std::move(matrix));
+    g_MatrixManager = new MatrixManager(std::move(matrix), appPath);
 
     CommandParser commandParser(g_MatrixManager);
 

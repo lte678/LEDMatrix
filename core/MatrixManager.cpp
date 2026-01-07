@@ -8,8 +8,8 @@
 #include <unistd.h>
 
 
-MatrixManager::MatrixManager(std::unique_ptr<Matrix> display)
-    : m_Display(std::move(display)), m_MatrixData(), m_ResetQueued(), m_DrawPaused(), m_Running(true), m_ActiveApp(),
+MatrixManager::MatrixManager(std::unique_ptr<Matrix> display, std::string appPath)
+    : m_Display(std::move(display)), m_AppPath(appPath), m_MatrixData(), m_ResetQueued(), m_DrawPaused(), m_Running(true), m_ActiveApp(),
     m_Brightness("brightness", 150), PropertyInterface("matrix") {
 
     if (!m_Display->init()) {
@@ -124,10 +124,10 @@ void MatrixManager::clearMatrix() {
 }
 
 void MatrixManager::matrixLoop() {
-    loadApps("/usr/local/share/matrix/apps/");
+    loadApps(m_AppPath);
 
     if(m_Modules.empty()) {
-        std::cerr << "Failed to load any apps!" << std::endl;
+        std::cerr << "Failed to load any apps at " << m_AppPath << std::endl;
         exit(1);
     }
     std::cout << "Starting matrix draw loop" << std::endl;

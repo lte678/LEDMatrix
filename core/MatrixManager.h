@@ -17,10 +17,11 @@
 #include "Matrix.h"
 #include "MatrixApp.h"
 
+
 class MatrixManager : public PropertyInterface {
 //TODO: Look at scope of member functions (private/public)
 public:
-    MatrixManager(std::unique_ptr<Matrix> display);
+    MatrixManager(std::unique_ptr<Matrix> display, std::string appPath);
     //~MatrixManager();
 
     void loadApps(const std::string &moduleDir);
@@ -56,6 +57,7 @@ private:
     std::unique_ptr<Matrix> m_Display;
     matrix_t m_MatrixData;
 
+    std::string m_AppPath;
     std::vector<Module> m_Modules;
 
     // All values that are modifiable from other threads
@@ -68,5 +70,8 @@ private:
     IntProperty m_Brightness;
 };
 
+
+// Global matrix manager context
+extern MatrixManager* g_MatrixManager;
 
 #endif //MATRIX_CORE_MATRIXMANAGER_H
