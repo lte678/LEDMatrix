@@ -20,7 +20,7 @@
 class MatrixManager : public PropertyInterface {
 //TODO: Look at scope of member functions (private/public)
 public:
-    explicit MatrixManager(std::unique_ptr<Matrix> display);
+    MatrixManager(std::unique_ptr<Matrix> display);
     //~MatrixManager();
 
     void loadApps(const std::string &moduleDir);

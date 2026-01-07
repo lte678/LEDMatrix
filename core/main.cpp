@@ -1,16 +1,18 @@
-#include <memory>
 #include <thread>
 #include <unistd.h>
 #include <signal.h>
 #include <cstring>
 
-#include "MatrixDefines.h"
 #include "socketThreads.h"
-//#include "matrixThread.h"
-#include "HardwareMatrix.h"
 #include "MatrixManager.h"
 #include "CommandParser.h"
 #include "ServiceUtils.h"
+#ifdef USE_SOFTWARE_MATRIX
+#include "SoftwareMatrix.h"
+#else
+#include "MatrixDefines.h"
+#include "HardwareMatrix.h"
+#endif
 
 std::thread socketListenerThread;
 
@@ -45,9 +47,12 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    g_MatrixManager = new MatrixManager(
-        std::make_unique<HardwareMatrix>(GPIO_PIN)
-    );
+#ifdef USE_SOFTWARE_MATRIX
+    auto matrix = std::make_unique<SoftwareMatrix>();
+#else
+    auto matrix = std::make_unique<HardwareMatrix>(GPIO_PIN);
+#endif
+    g_MatrixManager = new MatrixManager(std::move(matrix));
 
     CommandParser commandParser(g_MatrixManager);
 
