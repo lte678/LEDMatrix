@@ -5,10 +5,14 @@
 #include <SDL3/SDL_video.h>
 
 
+constexpr int WINDOW_WIDTH = 320;
+constexpr int LED_GLOW_TEXTURE_SIZE = WINDOW_WIDTH / LED_WIDTH;
+
 class SoftwareMatrix : public Matrix {
 private:
     SDL_Window* m_Window;
     SDL_Surface* m_WindowSurface;
+    SDL_Surface* m_LedGlowTexture;
 public:
     explicit SoftwareMatrix() {}
 
