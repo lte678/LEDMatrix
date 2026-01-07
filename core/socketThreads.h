@@ -5,6 +5,7 @@
 #ifndef MATRIXIFACE_SOCKETTHREADS_H
 #define MATRIXIFACE_SOCKETTHREADS_H
 
+#include <fcntl.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -16,7 +17,6 @@
 #include <thread>
 #include <atomic>
 #include <string.h>
-#include <mutex>
 
 #include "CommandParser.h"
 

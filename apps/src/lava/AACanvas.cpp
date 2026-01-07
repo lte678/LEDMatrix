@@ -61,5 +61,5 @@ pixel_t AACanvas::samplePixel(int x, int y) {
             newW += (float)pixel.w * s;
         }
     }
-    return pixel_t((u_char)newR, (u_char)newG, (u_char)newB, (u_char)newW);
+    return pixel_t((uint8_t)newR, (uint8_t)newG, (uint8_t)newB, (uint8_t)newW);
 }

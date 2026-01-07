@@ -9,7 +9,7 @@ include_directories(
         ../include
         ../lib)
 
-set(SOURCE_FILES main.cpp ServiceUtils.cpp MatrixManager.cpp CommandParser.cpp ../lib/property/Property.cpp)
+set(SOURCE_FILES main.cpp ServiceUtils.cpp HardwareMatrix.cpp MatrixManager.cpp CommandParser.cpp ../lib/property/Property.cpp)
 
 add_executable(matrix_core ${SOURCE_FILES})
 add_subdirectory(Commands)

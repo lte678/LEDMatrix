@@ -3,6 +3,7 @@
 //
 
 #include "CommandParser.h"
+#include <cstring>
 
 CommandParser::CommandParser(MatrixManager *matrix) : m_PropTree("root"), m_Matrix(matrix) {
     m_PropTree.registerPropTree(matrix);

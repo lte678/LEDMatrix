@@ -1,4 +1,4 @@
-#include <iostream>
+#include <memory>
 #include <thread>
 #include <unistd.h>
 #include <signal.h>
@@ -7,13 +7,14 @@
 #include "MatrixDefines.h"
 #include "socketThreads.h"
 //#include "matrixThread.h"
+#include "HardwareMatrix.h"
 #include "MatrixManager.h"
 #include "CommandParser.h"
 #include "ServiceUtils.h"
 
 std::thread socketListenerThread;
 
-MatrixManager* g_Matrix;
+MatrixManager* g_MatrixManager;
 
 void termSocketListener() {
     socketThreadRunning = false;
@@ -22,8 +23,8 @@ void termSocketListener() {
 }
 
 void termHandler(int signum, siginfo_t *info, void *ptr) {
-    if(g_Matrix) {
-        (*g_Matrix).stop();
+    if(g_MatrixManager) {
+        (*g_MatrixManager).stop();
     }
 }
 
@@ -44,14 +45,16 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    g_Matrix = new MatrixManager(GPIO_PIN);
+    g_MatrixManager = new MatrixManager(
+        std::make_unique<HardwareMatrix>(GPIO_PIN)
+    );
 
-    CommandParser commandParser(g_Matrix);
+    CommandParser commandParser(g_MatrixManager);
 
     catchSigterm();
 
     socketListenerThread = std::thread(&socketListener, &commandParser);
-    (*g_Matrix).matrixLoop();
+    (*g_MatrixManager).matrixLoop();
 
     termSocketListener();
     return EXIT_SUCCESS;

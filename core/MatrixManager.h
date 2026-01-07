@@ -6,21 +6,21 @@
 #define MATRIX_CORE_MATRIXMANAGER_H
 
 
-#include <iostream>
 #include <atomic>
 #include <dlfcn.h>
 #include <dirent.h>
 #include <mutex>
+#include <memory>
 
 #include "property/Property.h"
 #include "MatrixDefines.h"
-//#include "CommandParser.h"
+#include "Matrix.h"
 #include "MatrixApp.h"
 
 class MatrixManager : public PropertyInterface {
 //TODO: Look at scope of member functions (private/public)
 public:
-    explicit MatrixManager(int gpioPin);
+    explicit MatrixManager(std::unique_ptr<Matrix> display);
     //~MatrixManager();
 
     void loadApps(const std::string &moduleDir);
@@ -34,20 +34,14 @@ public:
     bool hasApp(std::string appName) const;
     std::vector<std::string> getAppNames() const;
 
-
     std::string command(char *command);
-
-    //void setBrightness(int brightness);
 
     void matrixLoop();
 
-    //int getModuleIndex(char* name);
 private:
     void stopMatrix();
     void unloadApps();
-    void renderMatrix();
     void clearMatrix();
-    static int matrixToStrip(int x, int y);
 
 private:
     struct Module {
@@ -59,7 +53,7 @@ private:
         MatrixApp* instance;
     };
 
-    ws2811_t m_Matrix;
+    std::unique_ptr<Matrix> m_Display;
     matrix_t m_MatrixData;
 
     std::vector<Module> m_Modules;
