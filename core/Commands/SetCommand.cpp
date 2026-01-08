@@ -4,6 +4,8 @@
 
 #include "SetCommand.h"
 
+#include <sstream>
+
 std::string SetCommand::execute(std::vector<char *> params) {
     std::stringstream response;
     if(params.size() != 3) {

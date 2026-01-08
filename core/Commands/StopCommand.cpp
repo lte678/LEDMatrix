@@ -4,9 +4,10 @@
 
 #include "StopCommand.h"
 
+#include <sstream>
+
 std::string StopCommand::execute(std::vector<char *> params) {
     std::stringstream response;
-    m_Matrix->pause();
-    m_Matrix->resetApp();
+    m_Matrix->stopApp();
     return response.str();
 }

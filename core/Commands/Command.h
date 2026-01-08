@@ -7,10 +7,8 @@
 
 #include <string>
 #include <vector>
-#include <sstream>
 
 #include "../MatrixManager.h"
-#include "property/Property.h"
 
 class Command {
 public:

@@ -4,6 +4,8 @@
 
 #include "StartCommand.h"
 
+#include <sstream>
+
 std::string StartCommand::execute(std::vector<char *> params) {
     std::stringstream response;
     if(params.size() != 2) {

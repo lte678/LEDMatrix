@@ -4,6 +4,8 @@
 
 #include "ListCommand.h"
 
+#include <sstream>
+
 std::string ListCommand::execute(std::vector<char *> params) {
     std::stringstream response;
     printProperties(m_Matrix, response, 0);

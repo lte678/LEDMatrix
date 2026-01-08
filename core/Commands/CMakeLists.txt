@@ -4,6 +4,7 @@ target_sources(matrix_core PRIVATE
         StopCommand.cpp
         SetCommand.cpp
         AppsCommand.cpp
+        ActiveCommand.cpp
         ResetCommand.cpp
         UnpauseCommand.cpp
         PauseCommand.cpp)

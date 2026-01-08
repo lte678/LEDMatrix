@@ -29,11 +29,7 @@ void MatrixManager::stopMatrix() {
     m_Display->shutdown();
 }
 
-//std::string MatrixManager::command(char *command) {
-//   return m_CommandProcessor.parse(command);
-//}
-
-//Dieser Codeabschnitt wurde mit (wahrscheinlci0jh) >0,5 Promille geschrieben (um 02:00 morgens)
+// === Achtung: Dieser Codeabschnitt wurde um 02:00 morgens unter Alkoholeinfluss geschrieben ===
 void MatrixManager::loadApps(const std::string &moduleDir) {
     std::string modulePrefix = "app";
     std::string moduleSuffix = ".so";
@@ -74,7 +70,7 @@ void MatrixManager::loadApps(const std::string &moduleDir) {
         }
     }
 }
-//Und hier ist der Spass zu Ende :(
+// === End of influence ===
 
 void MatrixManager::unloadApps() {
     for(const Module &currentModule : m_Modules) {
@@ -97,14 +93,33 @@ int MatrixManager::getModuleIndex(std::string appName) {
 void MatrixManager::setApp(std::string appName) {
     for(const Module &mod : m_Modules) {
         if(mod.name == appName) m_ActiveApp = mod.instance;
-        (*m_ActiveApp).initApp();
     }
+    (*m_ActiveApp).initApp();
+
 
     matrix_t blendedFrame;
     blend_frames(blendedFrame, m_FadeIn, m_FreezeFrame, m_Canvas);
     copy_frame(m_FreezeFrame, blendedFrame);
     clearMatrix();
     m_FadeIn = 0.0f;
+}
+
+void MatrixManager::stopApp() {
+    matrix_t blendedFrame;
+    blend_frames(blendedFrame, m_FadeIn, m_FreezeFrame, m_Canvas);
+    copy_frame(m_FreezeFrame, blendedFrame);
+    m_FadeIn = 0.0f;
+
+    m_ActiveApp = nullptr;
+}
+
+std::string MatrixManager::getRunningApp() const {
+    for(const Module &mod : m_Modules) {
+        if(mod.instance == m_ActiveApp) {
+            return mod.name;
+        }
+    }
+    return "none";
 }
 
 bool MatrixManager::hasApp(std::string appName) const {
@@ -152,7 +167,6 @@ void MatrixManager::matrixLoop() {
     while(g_ApplicationRunning) {
         m_Display->setBrightness((uint8_t)m_Brightness.getValue());
 
-        
         if(m_ResetQueued) {
             clearMatrix();
             for(const Module &mod : m_Modules) {
@@ -162,10 +176,18 @@ void MatrixManager::matrixLoop() {
             }
             m_ResetQueued = false;
         }
-        
-        frameTime = 1.0f / (*m_ActiveApp).getFrameRate();
+
+        if(m_ActiveApp == nullptr) {
+            frameTime = 1.0f / 30.0f;
+        } else {
+            frameTime = 1.0f / (*m_ActiveApp).getFrameRate();
+        }
         if(!m_DrawPaused) {
-            (*m_ActiveApp).drawFrame(frameTime);
+            if(m_ActiveApp == nullptr) {
+                clearMatrix();
+            } else {
+                (*m_ActiveApp).drawFrame(frameTime);
+            }
             m_FadeIn = std::min(1.0f, m_FadeIn + frameTime/m_CrossfadeTime.getValue());
         }
 

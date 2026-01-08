@@ -4,6 +4,8 @@
 
 #include "PauseCommand.h"
 
+#include <sstream>
+
 std::string PauseCommand::execute(std::vector<char *> params) {
     std::stringstream response;
     m_Matrix->pause();

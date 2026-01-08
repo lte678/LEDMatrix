@@ -4,6 +4,8 @@
 
 #include "ResetCommand.h"
 
+#include <sstream>
+
 std::string ResetCommand::execute(std::vector<char *> params) {
     std::stringstream response;
     m_Matrix->resetApp();

@@ -4,6 +4,8 @@
 
 #include "AppsCommand.h"
 
+#include <sstream>
+
 std::string AppsCommand::execute(std::vector<char *> params) {
     std::stringstream response;
     std::vector<std::string> apps = m_Matrix->getAppNames();

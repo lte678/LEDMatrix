@@ -4,6 +4,8 @@
 
 #include "UnpauseCommand.h"
 
+#include <sstream>
+
 std::string UnpauseCommand::execute(std::vector<char *> params) {
     std::stringstream response;
     m_Matrix->unpause();

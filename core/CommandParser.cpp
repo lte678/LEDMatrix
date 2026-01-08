@@ -3,7 +3,9 @@
 //
 
 #include "CommandParser.h"
+#include "Commands/ActiveCommand.h"
 #include <cstring>
+#include <memory>
 
 CommandParser::CommandParser(MatrixManager *matrix) : m_PropTree("root"), m_Matrix(matrix) {
     m_PropTree.registerPropTree(matrix);
@@ -13,6 +15,7 @@ CommandParser::CommandParser(MatrixManager *matrix) : m_PropTree("root"), m_Matr
     registerCommand(std::make_unique<PauseCommand>(matrix));
     registerCommand(std::make_unique<SetCommand>(matrix));
     registerCommand(std::make_unique<AppsCommand>(matrix));
+    registerCommand(std::make_unique<ActiveCommand>(matrix));
     registerCommand(std::make_unique<UnpauseCommand>(matrix));
     registerCommand(std::make_unique<ResetCommand>(matrix));
 }

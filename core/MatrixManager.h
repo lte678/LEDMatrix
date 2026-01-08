@@ -26,15 +26,15 @@ public:
 
     void loadApps(const std::string &moduleDir);
 
-    void resetApp() { m_ResetQueued = true; };
     void pause() { m_DrawPaused = true; };
     void unpause() { m_DrawPaused = false; };
-
+    
+    void resetApp() { m_ResetQueued = true; };
     void setApp(std::string appName);
     bool hasApp(std::string appName) const;
+    std::string getRunningApp() const;
+    void stopApp();
     std::vector<std::string> getAppNames() const;
-
-    std::string command(char *command);
 
     void matrixLoop();
 
