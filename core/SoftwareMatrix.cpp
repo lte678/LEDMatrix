@@ -31,35 +31,35 @@ bool SoftwareMatrix::init() {
         exit(1);
     }
 
-    m_WindowSurface = SDL_GetWindowSurface(m_Window);
-    if(m_WindowSurface == nullptr) {
-        std::cerr << "Failed to create window surface." << std::endl;
-        exit(1);
-    }
-
-    // Prepare the led texture
-    m_LedGlowTexture = SDL_CreateSurface(LED_GLOW_TEXTURE_SIZE, LED_GLOW_TEXTURE_SIZE, m_WindowSurface->format);
-    if(m_LedGlowTexture == nullptr || !SDL_ClearSurface(m_LedGlowTexture, 1.0, 1.0, 1.0, 1.0)) {
-        std::cerr << "Failed to create texture." << std::endl;
+    // Create hardware-accelerated renderer
+    m_Renderer = SDL_CreateRenderer(m_Window, nullptr);
+    if(m_Renderer == nullptr) {
+        std::cerr << "Failed to create renderer." << std::endl;
         exit(1);
     }
 
     // Create a circular blur effect
+    SDL_Surface* tempSurface = SDL_CreateSurface(LED_GLOW_TEXTURE_SIZE, LED_GLOW_TEXTURE_SIZE, SDL_PIXELFORMAT_RGBA32);    
     for (int i = 0; i < LED_GLOW_TEXTURE_SIZE; i++) {
         for (int j = 0; j < LED_GLOW_TEXTURE_SIZE; j++) {
             float x = 2 * ((i - 0.5f*LED_GLOW_TEXTURE_SIZE) / LED_GLOW_TEXTURE_SIZE);
             float y = 2 * ((j - 0.5f*LED_GLOW_TEXTURE_SIZE) / LED_GLOW_TEXTURE_SIZE);
             float value = std::max(0.0f, static_cast<float>(std::exp((-std::pow(x*x + y*y, 1.5)) - std::exp(-1.0f)) / (1.0f - std::exp(-1.0f))));
-            SDL_WriteSurfacePixelFloat(m_LedGlowTexture, i, j, value, value, value, 1.0f);
+            SDL_WriteSurfacePixelFloat(tempSurface, i, j, value, value, value, 1.0f);
         }
     }
-    SDL_SetSurfaceBlendMode(m_LedGlowTexture, SDL_BLENDMODE_ADD_PREMULTIPLIED);
 
+    // Convert surface to hardware texture
+    m_LedGlowTexture = SDL_CreateTextureFromSurface(m_Renderer, tempSurface);
+    SDL_DestroySurface(tempSurface);
+    
+    SDL_SetTextureBlendMode(m_LedGlowTexture, SDL_BLENDMODE_ADD);
+    
     return true;
 }
 
 void SoftwareMatrix::shutdown() {
-    SDL_DestroySurface(m_LedGlowTexture);
+    SDL_DestroyTexture(m_LedGlowTexture);
     m_LedGlowTexture = nullptr;
 
     SDL_DestroyWindow(m_Window);
@@ -77,27 +77,29 @@ void SoftwareMatrix::render(const matrix_t &matrixData) {
         }
     }
 
-    SDL_ClearSurface(m_WindowSurface, 0.0, 0.0, 0.0, 1.0);
+    SDL_SetRenderDrawColor(m_Renderer, 0, 0, 0, 255);
+    SDL_RenderClear(m_Renderer);
+    
     float stride = static_cast<float>(WINDOW_WIDTH) / LED_WIDTH;
     for (int i = 0; i < LED_WIDTH; i++) {
         for (int j = 0; j < LED_HEIGHT; j++) {
             int center_x = 0.5 * stride + stride * i;
             int center_y = 0.5 * stride + stride * j;
-            SDL_Rect target = SDL_Rect{
-                static_cast<int>(center_x - 0.5*LED_GLOW_TEXTURE_SIZE),
-                static_cast<int>(center_y - 0.5*LED_GLOW_TEXTURE_SIZE),
-                LED_GLOW_TEXTURE_SIZE,
-                LED_GLOW_TEXTURE_SIZE
+            SDL_FRect target = {
+                center_x - 0.5f*LED_GLOW_TEXTURE_SIZE,
+                center_y - 0.5f*LED_GLOW_TEXTURE_SIZE,
+                static_cast<float>(LED_GLOW_TEXTURE_SIZE),
+                static_cast<float>(LED_GLOW_TEXTURE_SIZE)
             };
             
             pixel_t pixel = matrixData[i][j];
             uint8_t r, g, b;
             std::tie(r, g, b) = map_rgbw_to_rgb(pixel.r, pixel.g, pixel.b, pixel.w);
-            SDL_SetSurfaceColorMod(m_LedGlowTexture, r * m_Brightness, g * m_Brightness, b * m_Brightness);
-            SDL_BlitSurface(m_LedGlowTexture, nullptr, m_WindowSurface, &target);
+            SDL_SetTextureColorMod(m_LedGlowTexture, r * m_Brightness, g * m_Brightness, b * m_Brightness);
+            SDL_RenderTexture(m_Renderer, m_LedGlowTexture, nullptr, &target);
         }
     }
-    SDL_UpdateWindowSurface(m_Window);
+    SDL_RenderPresent(m_Renderer);
 }
 
 void SoftwareMatrix::setBrightness(uint8_t brightness) {

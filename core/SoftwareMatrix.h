@@ -3,6 +3,7 @@
 #include "Matrix.h"
 
 #include <SDL3/SDL_video.h>
+#include <SDL3/SDL_render.h>
 
 
 constexpr int WINDOW_WIDTH = 320;
@@ -12,7 +13,8 @@ class SoftwareMatrix : public Matrix {
 private:
     SDL_Window* m_Window;
     SDL_Surface* m_WindowSurface;
-    SDL_Surface* m_LedGlowTexture;
+    SDL_Texture* m_LedGlowTexture;
+    SDL_Renderer* m_Renderer;
     float m_Brightness;
 public:
     explicit SoftwareMatrix() : m_Brightness(1.0f) {}
