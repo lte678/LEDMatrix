@@ -38,7 +38,7 @@ bool SoftwareMatrix::init() {
     }
 
     // Prepare the led texture
-    m_LedGlowTexture = SDL_CreateSurface(LED_GLOW_TEXTURE_SIZE, LED_GLOW_TEXTURE_SIZE, SDL_PIXELFORMAT_RGBA32);
+    m_LedGlowTexture = SDL_CreateSurface(LED_GLOW_TEXTURE_SIZE, LED_GLOW_TEXTURE_SIZE, m_WindowSurface->format);
     if(m_LedGlowTexture == nullptr || !SDL_ClearSurface(m_LedGlowTexture, 1.0, 1.0, 1.0, 1.0)) {
         std::cerr << "Failed to create texture." << std::endl;
         exit(1);
@@ -50,10 +50,10 @@ bool SoftwareMatrix::init() {
             float x = 2 * ((i - 0.5f*LED_GLOW_TEXTURE_SIZE) / LED_GLOW_TEXTURE_SIZE);
             float y = 2 * ((j - 0.5f*LED_GLOW_TEXTURE_SIZE) / LED_GLOW_TEXTURE_SIZE);
             float value = std::max(0.0f, static_cast<float>(std::exp((-std::pow(x*x + y*y, 1.5)) - std::exp(-1.0f)) / (1.0f - std::exp(-1.0f))));
-            SDL_WriteSurfacePixelFloat(m_LedGlowTexture, i, j, 1.0, 1.0, 1.0, value);
+            SDL_WriteSurfacePixelFloat(m_LedGlowTexture, i, j, value, value, value, 1.0f);
         }
     }
-    SDL_SetSurfaceBlendMode(m_LedGlowTexture, SDL_BLENDMODE_ADD);
+    SDL_SetSurfaceBlendMode(m_LedGlowTexture, SDL_BLENDMODE_ADD_PREMULTIPLIED);
 
     return true;
 }
