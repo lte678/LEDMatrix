@@ -55,7 +55,7 @@ bool LavaApp::Blob::outOfBounds() const {
 }
 
 LavaApp::LavaApp(matrix_t *inMatrix) : MatrixApp(inMatrix, "lava"),
-    m_FlowRate("flowrate", 2.0f),
+    m_FlowRate("flowrate", 1.0f),
     m_Size("size", 1.5f),
     m_Jitter("jitter", 0.1f),
     m_NumberBlobs("number", 6),

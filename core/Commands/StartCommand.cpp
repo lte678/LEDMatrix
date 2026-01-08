@@ -12,7 +12,6 @@ std::string StartCommand::execute(std::vector<char *> params) {
     }
 
     if(m_Matrix->hasApp(params.at(1))) {
-        m_Matrix->resetApp();
         m_Matrix->setApp(params.at(1));
         m_Matrix->unpause();
     } else {

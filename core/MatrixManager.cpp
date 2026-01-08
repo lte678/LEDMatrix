@@ -10,10 +10,11 @@
 
 
 MatrixManager::MatrixManager(std::unique_ptr<Matrix> display, std::string appPath)
-    : m_Display(std::move(display)), m_AppPath(appPath), m_MatrixData(), m_ResetQueued(), m_DrawPaused(), m_ActiveApp(),
-    m_Brightness("brightness", 150), PropertyInterface("matrix") {
+    : m_Display(std::move(display)), m_AppPath(appPath), m_Canvas(), m_FreezeFrame(), m_FadeIn(1.0f),
+    m_ResetQueued(), m_DrawPaused(), m_ActiveApp(), m_Brightness("brightness", 150), m_CrossfadeTime("crossfade", 0.2), PropertyInterface("matrix") {
 
     registerProperty(&m_Brightness);
+    registerProperty(&m_CrossfadeTime);
 
     if (!m_Display->init()) {
         perror("Failed to initialize display");
@@ -24,7 +25,7 @@ MatrixManager::MatrixManager(std::unique_ptr<Matrix> display, std::string appPat
 
 void MatrixManager::stopMatrix() {
     clearMatrix();
-    m_Display->render(m_MatrixData);
+    m_Display->render(m_Canvas);
     m_Display->shutdown();
 }
 
@@ -65,7 +66,7 @@ void MatrixManager::loadApps(const std::string &moduleDir) {
             currentModule.constructor = (MatrixApp::createApp*) dlsym(moduleHandle, "create");
             currentModule.destructor = (MatrixApp::destroyApp*) dlsym(moduleHandle, "destroy");
 
-            currentModule.instance = currentModule.constructor(&m_MatrixData);
+            currentModule.instance = currentModule.constructor(&m_Canvas);
 
             registerPropTree(currentModule.instance);
 
@@ -98,6 +99,12 @@ void MatrixManager::setApp(std::string appName) {
         if(mod.name == appName) m_ActiveApp = mod.instance;
         (*m_ActiveApp).initApp();
     }
+
+    matrix_t blendedFrame;
+    blend_frames(blendedFrame, m_FadeIn, m_FreezeFrame, m_Canvas);
+    copy_frame(m_FreezeFrame, blendedFrame);
+    clearMatrix();
+    m_FadeIn = 0.0f;
 }
 
 bool MatrixManager::hasApp(std::string appName) const {
@@ -118,7 +125,7 @@ std::vector<std::string> MatrixManager::getAppNames() const {
 }
 
 void MatrixManager::clearMatrix() {
-    for (auto &column : m_MatrixData) {
+    for (auto &column : m_Canvas) {
         for (auto &cell : column) {
             cell = 0;
         }
@@ -130,19 +137,22 @@ void MatrixManager::matrixLoop() {
 
     if(m_Modules.empty()) {
         std::cerr << "Failed to load any apps at " << m_AppPath << std::endl;
-        exit(1);
+        exitapp(1);
+        return;
     }
     std::cout << "Starting matrix draw loop" << std::endl;
 
     m_ActiveApp = m_Modules.at(0).instance;
     (*m_ActiveApp).initApp();
 
-    int counter = 0;
     clearMatrix();
 
+    matrix_t blendedFrame;
+    float frameTime;
     while(g_ApplicationRunning) {
         m_Display->setBrightness((uint8_t)m_Brightness.getValue());
 
+        
         if(m_ResetQueued) {
             clearMatrix();
             for(const Module &mod : m_Modules) {
@@ -150,18 +160,18 @@ void MatrixManager::matrixLoop() {
                     (*m_ActiveApp).initApp();
                 }
             }
-            counter = 0;
             m_ResetQueued = false;
         }
-
+        
+        frameTime = 1.0f / (*m_ActiveApp).getFrameRate();
         if(!m_DrawPaused) {
-            (*m_ActiveApp).drawFrame(1.0f / (*m_ActiveApp).getFrameRate());
-            counter++;
+            (*m_ActiveApp).drawFrame(frameTime);
+            m_FadeIn = std::min(1.0f, m_FadeIn + frameTime/m_CrossfadeTime.getValue());
         }
 
-        m_Display->render(m_MatrixData);
-
-        usleep(1e6 / (*m_ActiveApp).getFrameRate());
+        blend_frames(blendedFrame, m_FadeIn, m_FreezeFrame, m_Canvas);
+        m_Display->render(blendedFrame);
+        usleep(1e6 * frameTime);
     }
 
     stopMatrix();

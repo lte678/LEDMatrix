@@ -6,9 +6,10 @@
 
 #include "sparkles.h"
 
+
 SparklesApp::SparklesApp(matrix_t *inMatrix) : MatrixApp(inMatrix, "sparkles"),
-    m_FadeSpeed("fadespeed", 0.15),
-    m_SparkleRate("sparklerate", 30){
+    m_FadeSpeed("fadespeed", 1.0),
+    m_SparkleRate("sparklerate", 15){
     m_FrameRate = 25; //Override defualt framerate of 10fps
 
     registerProperty(&m_FadeSpeed);
@@ -21,5 +22,5 @@ void SparklesApp::drawFrame(float dt) {
         (*m_Matrix)[rand() % LED_WIDTH][rand() % LED_HEIGHT] = pixel_t(255, 100, 200, 50);
         sparkleCount--;
     }
-    MatrixApp::multiplyMatrix(m_Matrix, 1.0f - m_FadeSpeed);
+    MatrixApp::multiplyMatrix(m_Matrix, std::max(0.0f, 1.0f - m_FadeSpeed*dt));
 }

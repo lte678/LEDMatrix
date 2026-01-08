@@ -6,7 +6,7 @@
 
 
 ColorwaveApp::ColorwaveApp(matrix_t *inMatrix) : MatrixApp(inMatrix, "colorwave"),
-    m_FadeSpeed("fadespeed", 25) {
+    m_FadeSpeed("fadespeed", 10) {
 
     registerProperty(&m_FadeSpeed);
 

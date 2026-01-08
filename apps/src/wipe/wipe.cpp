@@ -7,7 +7,7 @@
 #include "wipe.h"
 
 WipeApp::WipeApp(matrix_t *inMatrix) : MatrixApp(inMatrix, "wipe"),
-    m_WipeRate("wiperate", 10.0f),
+    m_WipeRate("wiperate", 5.0f),
     m_Dithering("dithering", 2.0f) {
 
     registerProperty(&m_WipeRate);

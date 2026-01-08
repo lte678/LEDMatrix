@@ -54,7 +54,9 @@ private:
     };
 
     std::unique_ptr<Matrix> m_Display;
-    matrix_t m_MatrixData;
+    matrix_t m_Canvas;
+    matrix_t m_FreezeFrame;
+    float m_FadeIn;
 
     std::string m_AppPath;
     std::vector<Module> m_Modules;
@@ -66,6 +68,7 @@ private:
     std::atomic<MatrixApp*> m_ActiveApp;
 
     IntProperty m_Brightness;
+    FloatProperty m_CrossfadeTime;
 };
 
 #endif //MATRIX_CORE_MATRIXMANAGER_H

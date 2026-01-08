@@ -4,7 +4,7 @@ project(wipe)
 
 include_directories(${PROJECT_SOURCE_DIR})
 
-add_library(wipe SHARED lava.cpp)
+add_library(wipe SHARED wipe.cpp)
 
 target_link_libraries(wipe property)
 
