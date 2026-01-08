@@ -42,7 +42,7 @@ static void clientConnection(int index, CommandParser *parser) {
     while(!closeConnection) {
         bzero(buffer, sizeof(buffer));
         read(clients.at(index), buffer, sizeof(buffer) - 1); //Minus 1 to avoid overriding the null terminator
-
+        
         if(strcmp(buffer, "") != 0) {
             char* token;
             char* bufferPointer = buffer;
@@ -89,8 +89,6 @@ static void socketListener(CommandParser *parser) {
         exitapp(EXIT_FAILURE);
     }
 
-    int flags = fcntl(socketfd, F_GETFL);
-    fcntl(socketfd, F_SETFL, flags | O_NONBLOCK);
     
     const int enable = 1;
     if(setsockopt(socketfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable)) < 0) {
@@ -116,9 +114,7 @@ static void socketListener(CommandParser *parser) {
         int clientFD = accept(socketfd, (struct sockaddr*) &clientAddress, (socklen_t*) &addressLength);
 
         if(clientFD == -1) {
-            if(errno == EWOULDBLOCK) {
-                usleep(1e5); // No inbound connections, just wait for a bit
-            } else {
+            if(errno != EINTR) {
                 perror("Error while accepting connection");
                 exitapp(EXIT_FAILURE);
             }

@@ -19,6 +19,7 @@ std::thread socketListenerThread;
 
 void termSocketListener() {
     socketThreadRunning = false;
+    pthread_kill(socketListenerThread.native_handle(), SIGTERM);
     socketListenerThread.join();
 }
 
