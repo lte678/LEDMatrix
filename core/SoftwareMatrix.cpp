@@ -48,7 +48,7 @@ bool SoftwareMatrix::init() {
         for (int j = 0; j < LED_GLOW_TEXTURE_SIZE; j++) {
             float x = 2 * ((i - 0.5f*LED_GLOW_TEXTURE_SIZE) / LED_GLOW_TEXTURE_SIZE);
             float y = 2 * ((j - 0.5f*LED_GLOW_TEXTURE_SIZE) / LED_GLOW_TEXTURE_SIZE);
-            float value = std::min((float)std::exp(-2*x*x -2*y*y), 1.0f - std::sqrt(x*x + y*y));
+            float value = std::max(0.0f, static_cast<float>(std::exp((-std::pow(x*x + y*y, 1.5)) - std::exp(-1.0f)) / (1.0f - std::exp(-1.0f))));
             SDL_WriteSurfacePixelFloat(m_LedGlowTexture, i, j, 1.0, 1.0, 1.0, value);
         }
     }
