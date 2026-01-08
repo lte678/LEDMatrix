@@ -13,8 +13,9 @@ private:
     SDL_Window* m_Window;
     SDL_Surface* m_WindowSurface;
     SDL_Surface* m_LedGlowTexture;
+    float m_Brightness;
 public:
-    explicit SoftwareMatrix() {}
+    explicit SoftwareMatrix() : m_Brightness(1.0f) {}
 
     bool init() override;
     void shutdown() override;

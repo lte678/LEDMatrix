@@ -93,7 +93,7 @@ void SoftwareMatrix::render(const matrix_t &matrixData) {
             pixel_t pixel = matrixData[i][j];
             uint8_t r, g, b;
             std::tie(r, g, b) = map_rgbw_to_rgb(pixel.r, pixel.g, pixel.b, pixel.w);
-            SDL_SetSurfaceColorMod(m_LedGlowTexture, r, g, b);
+            SDL_SetSurfaceColorMod(m_LedGlowTexture, r * m_Brightness, g * m_Brightness, b * m_Brightness);
             SDL_BlitSurface(m_LedGlowTexture, nullptr, m_WindowSurface, &target);
         }
     }
@@ -101,4 +101,5 @@ void SoftwareMatrix::render(const matrix_t &matrixData) {
 }
 
 void SoftwareMatrix::setBrightness(uint8_t brightness) {
+    m_Brightness = static_cast<float>(brightness) / 255.0f;
 }
