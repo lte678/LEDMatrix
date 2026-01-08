@@ -9,7 +9,7 @@ include_directories(
         ../include
         ../lib)
 
-set(SOURCE_FILES main.cpp Globals.cpp ServiceUtils.cpp MatrixManager.cpp CommandParser.cpp ../lib/property/Property.cpp)
+set(SOURCE_FILES main.cpp Globals.cpp TcpServer.cpp ServiceUtils.cpp MatrixManager.cpp CommandParser.cpp ../lib/property/Property.cpp)
 if(USE_SOFTWARE_MATRIX)
         list(APPEND SOURCE_FILES SoftwareMatrix.cpp)
 else()

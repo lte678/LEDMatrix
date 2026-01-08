@@ -72,9 +72,7 @@ void SoftwareMatrix::shutdown() {
 void SoftwareMatrix::render(const matrix_t &matrixData) {
     SDL_Event e;
     while(SDL_PollEvent(&e)) {
-        if(e.type == SDL_EVENT_QUIT) {
-            g_MatrixManager->stop();
-        }
+        if(e.type == SDL_EVENT_QUIT) exitapp(0);
     }
 
     SDL_SetRenderDrawColor(m_Renderer, 0, 0, 0, 255);

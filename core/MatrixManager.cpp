@@ -10,16 +10,16 @@
 
 
 MatrixManager::MatrixManager(std::unique_ptr<Matrix> display, std::string appPath)
-    : m_Display(std::move(display)), m_AppPath(appPath), m_MatrixData(), m_ResetQueued(), m_DrawPaused(), m_Running(true), m_ActiveApp(),
+    : m_Display(std::move(display)), m_AppPath(appPath), m_MatrixData(), m_ResetQueued(), m_DrawPaused(), m_ActiveApp(),
     m_Brightness("brightness", 150), PropertyInterface("matrix") {
+
+    registerProperty(&m_Brightness);
 
     if (!m_Display->init()) {
         perror("Failed to initialize display");
-        m_Running = false;
+        exitapp(1);
         return;
     }
-
-    registerProperty(&m_Brightness);
 }
 
 void MatrixManager::stopMatrix() {
@@ -140,7 +140,7 @@ void MatrixManager::matrixLoop() {
     int counter = 0;
     clearMatrix();
 
-    while(m_Running) {
+    while(g_ApplicationRunning) {
         m_Display->setBrightness((uint8_t)m_Brightness.getValue());
 
         if(m_ResetQueued) {

@@ -26,7 +26,6 @@ public:
 
     void loadApps(const std::string &moduleDir);
 
-    void stop() { m_Running = false; };
     void resetApp() { m_ResetQueued = true; };
     void pause() { m_DrawPaused = true; };
     void unpause() { m_DrawPaused = false; };
@@ -63,7 +62,6 @@ private:
     // All values that are modifiable from other threads
     std::atomic<bool> m_ResetQueued;
     std::atomic<bool> m_DrawPaused;
-    std::atomic<bool> m_Running;
     std::mutex m_BrightnessLock;
     std::atomic<MatrixApp*> m_ActiveApp;
 

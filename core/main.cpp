@@ -3,7 +3,7 @@
 #include <signal.h>
 #include <cstring>
 
-#include "socketThreads.h"
+#include "TcpServer.h"
 #include "MatrixManager.h"
 #include "CommandParser.h"
 #include "ServiceUtils.h"
@@ -17,11 +17,6 @@
 
 std::thread socketListenerThread;
 
-void termSocketListener() {
-    socketThreadRunning = false;
-    pthread_kill(socketListenerThread.native_handle(), SIGTERM);
-    socketListenerThread.join();
-}
 
 void termHandler(int signum, siginfo_t *info, void *ptr) {
     exitapp(1);
@@ -60,10 +55,11 @@ int main(int argc, char *argv[]) {
 
     catchSigterm();
 
-    socketListenerThread = std::thread(&socketListener, &commandParser);
-    (*g_MatrixManager).matrixLoop();
+    g_TcpServer = new TcpServer();
+    std::thread tcpServerThread = std::thread([&](){ g_TcpServer->listenThread(&commandParser); });
+    g_MatrixManager->matrixLoop();
 
-    termSocketListener();
+    tcpServerThread.join();
     return EXIT_SUCCESS;
 }
 
