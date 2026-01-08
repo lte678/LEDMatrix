@@ -8,6 +8,7 @@
 #include "SDL3/SDL_surface.h"
 #include "SDL3/SDL_video.h"
 
+#include <cmath>
 #include <iostream>
 #include <SDL3/SDL.h>
 #include <tuple>
@@ -41,6 +42,17 @@ bool SoftwareMatrix::init() {
         std::cerr << "Failed to create texture." << std::endl;
         exit(1);
     }
+
+    // Create a circular blur effect
+    for (int i = 0; i < LED_GLOW_TEXTURE_SIZE; i++) {
+        for (int j = 0; j < LED_GLOW_TEXTURE_SIZE; j++) {
+            float x = 2 * ((i - 0.5f*LED_GLOW_TEXTURE_SIZE) / LED_GLOW_TEXTURE_SIZE);
+            float y = 2 * ((j - 0.5f*LED_GLOW_TEXTURE_SIZE) / LED_GLOW_TEXTURE_SIZE);
+            float value = std::min((float)std::exp(-2*x*x -2*y*y), 1.0f - std::sqrt(x*x + y*y));
+            SDL_WriteSurfacePixelFloat(m_LedGlowTexture, i, j, 1.0, 1.0, 1.0, value);
+        }
+    }
+    SDL_SetSurfaceBlendMode(m_LedGlowTexture, SDL_BLENDMODE_ADD);
 
     return true;
 }

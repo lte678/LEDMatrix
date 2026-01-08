@@ -6,7 +6,7 @@
 
 
 constexpr int WINDOW_WIDTH = 320;
-constexpr int LED_GLOW_TEXTURE_SIZE = WINDOW_WIDTH / LED_WIDTH;
+constexpr int LED_GLOW_TEXTURE_SIZE = 2 * WINDOW_WIDTH / LED_WIDTH;
 
 class SoftwareMatrix : public Matrix {
 private:
