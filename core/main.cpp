@@ -7,6 +7,7 @@
 #include "MatrixManager.h"
 #include "CommandParser.h"
 #include "ServiceUtils.h"
+#include "Globals.h"
 #ifdef USE_SOFTWARE_MATRIX
 #include "SoftwareMatrix.h"
 #else
@@ -16,18 +17,13 @@
 
 std::thread socketListenerThread;
 
-MatrixManager* g_MatrixManager;
-
 void termSocketListener() {
     socketThreadRunning = false;
-    closeConnections();
     socketListenerThread.join();
 }
 
 void termHandler(int signum, siginfo_t *info, void *ptr) {
-    if(g_MatrixManager) {
-        (*g_MatrixManager).stop();
-    }
+    exitapp(1);
 }
 
 void catchSigterm() {

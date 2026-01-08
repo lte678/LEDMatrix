@@ -70,8 +70,4 @@ private:
     IntProperty m_Brightness;
 };
 
-
-// Global matrix manager context
-extern MatrixManager* g_MatrixManager;
-
 #endif //MATRIX_CORE_MATRIXMANAGER_H

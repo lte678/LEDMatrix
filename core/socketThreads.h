@@ -19,6 +19,7 @@
 #include <string.h>
 
 #include "CommandParser.h"
+#include "Globals.h"
 
 //TODO: Move this crap into a class
 //We cant use an incomplete type in a header file, so we need to at least move it to a source file
@@ -31,21 +32,8 @@ char const *ackMessage = "ack;";
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
-// Forward declaration as a temporary solution
-/*class MatrixManager {
-public:
-    std::string command(char *command);
-};
- */
 
-void closeConnections() {
-    for(int clientfd : clients) {
-        close(clientfd);
-    }
-}
-
-
-void clientConnection(int index, CommandParser *parser) {
+static void clientConnection(int index, CommandParser *parser) {
     char buffer[256];
     char command[256];
     std::string commandResponse;
@@ -79,14 +67,14 @@ void clientConnection(int index, CommandParser *parser) {
                 *command = '\0';
             }
         } else {
-            std::cout << "Connection closed" << buffer << std::endl;
             closeConnection = true;
         }
     }
     close(clients.at(index));
+    std::cout << "Connection closed" << buffer << std::endl;
 }
 
-void socketListener(CommandParser *parser) {
+static void socketListener(CommandParser *parser) {
     std::vector<std::thread> clientHandlers;
     int socketfd; //socket file descriptor
     sockaddr_in serverAddress, clientAddress; //Host and client addresses
@@ -98,17 +86,21 @@ void socketListener(CommandParser *parser) {
 
     if((socketfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         perror("Failed to create socket");
-        exit(EXIT_FAILURE);
+        exitapp(EXIT_FAILURE);
     }
 
     int flags = fcntl(socketfd, F_GETFL);
     fcntl(socketfd, F_SETFL, flags | O_NONBLOCK);
-
-    //if(setsockopt(serverHandle, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
-
+    
+    const int enable = 1;
+    if(setsockopt(socketfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable)) < 0) {
+        perror("Failed to set socket opt");
+        exitapp(EXIT_FAILURE);
+    }
+    
     if(bind(socketfd, (struct sockaddr*) &serverAddress, sizeof(serverAddress)) == -1) {
         perror("Failed to bind socket");
-        exit(EXIT_FAILURE);
+        exitapp(EXIT_FAILURE);
     }
 
     std::cout << "Matrix Server started on port " << MATRIXPORT << std::endl;
@@ -116,7 +108,7 @@ void socketListener(CommandParser *parser) {
     //Wait for traffic on the socket, allow up to 5 backlogged connections
     if(listen(socketfd, 5) == -1) {
         perror("Cannot listen on socket");
-        exit(EXIT_FAILURE);
+        exitapp(EXIT_FAILURE);
     }
 
     while(socketThreadRunning) {
@@ -128,12 +120,20 @@ void socketListener(CommandParser *parser) {
                 usleep(1e5); // No inbound connections, just wait for a bit
             } else {
                 perror("Error while accepting connection");
-                exit(EXIT_FAILURE);
+                exitapp(EXIT_FAILURE);
             }
         } else {
             clients.emplace_back(clientFD);
             clientHandlers.emplace_back(std::thread(clientConnection, clients.size() - 1, parser));
         }
+    }
+
+    close(socketfd);
+
+    // The client handlers must be joined here to avoid them being terminated in an uncontrolled manner.
+    for(auto& clientConn : clientHandlers) {
+        pthread_kill(clientConn.native_handle(), SIGTERM);
+        clientConn.join();
     }
 }
 #pragma clang diagnostic pop

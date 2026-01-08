@@ -3,6 +3,7 @@
 //
 
 #include "MatrixManager.h"
+#include "Globals.h"
 
 #include <iostream>
 #include <unistd.h>
@@ -14,7 +15,8 @@ MatrixManager::MatrixManager(std::unique_ptr<Matrix> display, std::string appPat
 
     if (!m_Display->init()) {
         perror("Failed to initialize display");
-        exit(1);
+        m_Running = false;
+        return;
     }
 
     registerProperty(&m_Brightness);

@@ -4,6 +4,7 @@
 
 #include "MatrixDefines.h"
 #include "MatrixManager.h"
+#include "Globals.h"
 #include "SoftwareMatrix.h"
 #include "SDL3/SDL_surface.h"
 #include "SDL3/SDL_video.h"
