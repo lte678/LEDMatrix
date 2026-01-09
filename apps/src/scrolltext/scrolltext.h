@@ -10,7 +10,6 @@
 #include "MatrixDefines.h"
 
 #include <cstdlib>
-#include <iostream>
 #include "ubuntufont.h"
 
 #define CHARACTER_TRIM 1 //Amount to trim characters, since there is a lot of white space
@@ -27,7 +26,7 @@ struct Character {
 class ScrollTextApp : public MatrixApp {
 public:
     ScrollTextApp(matrix_t *inMatrix);
-    ~ScrollTextApp() { free(scrollText); }
+    ~ScrollTextApp() { if (scrollText != nullptr) free(scrollText); }
 
     void initApp() override;
     void drawFrame(float dt) override;
