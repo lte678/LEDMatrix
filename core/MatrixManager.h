@@ -37,7 +37,7 @@ public:
     void stopApp();
     std::vector<std::string> getAppNames() const;
 
-    float getFps() const { return m_FpsCounter.get_fps(); }
+    float getFps() { return m_FpsCounter.get_fps(); }
 
     void matrixLoop();
 

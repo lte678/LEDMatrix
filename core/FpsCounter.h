@@ -1,5 +1,6 @@
 #include <queue>
 #include <chrono>
+#include <mutex>
 
 using namespace std::chrono;
 
@@ -8,23 +9,27 @@ class FpsCounter {
 private:
     std::queue<time_point<steady_clock>> m_Samples;
     milliseconds m_SamplingPeriod;
+    std::mutex m_SampleLock;
 public:
     FpsCounter(milliseconds samplingPeriod = milliseconds(1000)) 
         : m_SamplingPeriod(samplingPeriod) {}
 
 
     void mark_frame() {
+        std::lock_guard<std::mutex> guard(m_SampleLock);
         m_Samples.push(steady_clock::now());
         cull_old_frames();
     }
     
     void reset() {
+        std::lock_guard<std::mutex> guard(m_SampleLock);
         while(!m_Samples.empty()) {
             m_Samples.pop();
         }
     }
 
-    float get_fps() const {
+    float get_fps() {
+        std::lock_guard<std::mutex> guard(m_SampleLock);
         // We need at least two frames to calculate a delta
         if (m_Samples.size() < 2) return 0.0;
 
