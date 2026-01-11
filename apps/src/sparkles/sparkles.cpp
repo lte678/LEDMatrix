@@ -10,7 +10,6 @@
 SparklesApp::SparklesApp(matrix_t *inMatrix) : MatrixApp(inMatrix, "sparkles"),
     m_FadeSpeed("fadespeed", 1.0),
     m_SparkleRate("sparklerate", 15){
-    m_FrameRate = 25; //Override defualt framerate of 10fps
 
     registerProperty(&m_FadeSpeed);
     registerProperty(&m_SparkleRate);

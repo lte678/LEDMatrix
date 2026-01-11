@@ -67,8 +67,6 @@ LavaApp::LavaApp(matrix_t *inMatrix) : MatrixApp(inMatrix, "lava"),
     registerProperty(&m_Jitter);
     registerProperty(&m_NumberBlobs);
     registerProperty(&m_BlobColor);
-
-    m_FrameRate = 60; //Override default framerate of 10fps
 }
 
 void LavaApp::initApp() {

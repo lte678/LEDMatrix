@@ -13,8 +13,6 @@ WipeApp::WipeApp(matrix_t *inMatrix) : MatrixApp(inMatrix, "wipe"),
     registerProperty(&m_WipeRate);
     registerProperty(&m_Dithering); // Linear dithering
 
-    m_FrameRate = 60; //Override defualt framerate of 10fps
-
     // The half-diagonal of the matrix (or radius if inscribed in circle), used to make sure our wipe starts outside the draw area
     m_MatrixRadius = sqrt(((float)LED_WIDTH)*((float)LED_WIDTH)*0.25f + ((float)LED_HEIGHT)*((float)LED_HEIGHT)*0.25f);
     newWipe();

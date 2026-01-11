@@ -12,8 +12,6 @@ ScrollTextApp::ScrollTextApp(matrix_t *inMatrix) : MatrixApp(inMatrix, "scrollte
     registerProperty(&m_ScrollSpeed);
     registerProperty(&m_ScrollText);
     registerProperty(&m_Spaces);
-
-    m_FrameRate = 25; //Override defualt framerate of 10fps
 }
 
 void ScrollTextApp::initApp() {

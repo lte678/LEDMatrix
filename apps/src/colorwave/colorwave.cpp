@@ -10,7 +10,6 @@ ColorwaveApp::ColorwaveApp(matrix_t *inMatrix) : MatrixApp(inMatrix, "colorwave"
 
     registerProperty(&m_FadeSpeed);
 
-    m_FrameRate = 25; //Override default framerate of 10fps
     time = 0.0f;
 
     noiseGenR.SetNoiseType(FastNoise::Perlin);

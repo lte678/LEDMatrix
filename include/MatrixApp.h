@@ -18,7 +18,7 @@ public:
     typedef void destroyApp(MatrixApp* app);
 
 
-    explicit MatrixApp(matrix_t *inMatrix, std::string id) : m_Matrix(inMatrix), PropertyInterface(id), m_FrameRate("framerate", 10.0f) {
+    explicit MatrixApp(matrix_t *inMatrix, std::string id) : m_Matrix(inMatrix), PropertyInterface(id), m_FrameRate("framerate", 50.0f) {
         registerProperty(&m_FrameRate);
     }
     virtual ~MatrixApp() = default;

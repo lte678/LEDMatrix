@@ -7,10 +7,7 @@
 
 GlowApp::GlowApp(matrix_t *inMatrix) : MatrixApp(inMatrix, "glow"),
     m_Color("color", 40, 0, 0, 255) {
-
     registerProperty(&m_Color);
-
-    m_FrameRate = 25; //Override default framerate of 10fps
 }
 
 void GlowApp::drawFrame(float dt) {

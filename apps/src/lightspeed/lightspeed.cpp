@@ -13,8 +13,6 @@ LightspeedApp::LightspeedApp(matrix_t *inMatrix) : MatrixApp(inMatrix, "lightspe
     registerProperty(&m_Speed);
     registerProperty(&m_Number);
 
-    m_FrameRate = 60; //Override defualt framerate of 10fps
-
     m_FOV =  atan(3.14159f / 4.0f); // maximum slope of ray from camera when looking a diagonal
     m_StartingDistance = 100.0f;
     m_MaxRadius = m_FOV * m_StartingDistance;
