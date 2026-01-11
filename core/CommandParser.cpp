@@ -14,6 +14,7 @@
 #include "Commands/ResetCommand.h"
 #include "Commands/ActiveCommand.h"
 #include "Commands/FpsCommand.h"
+#include "Commands/HelpCommand.h"
 
 #include <cstring>
 #include <memory>
@@ -30,6 +31,7 @@ CommandParser::CommandParser(MatrixManager *matrix) : m_PropTree("root"), m_Matr
     registerCommand(std::make_unique<UnpauseCommand>(matrix));
     registerCommand(std::make_unique<ResetCommand>(matrix));
     registerCommand(std::make_unique<FpsCommand>(matrix));
+    registerCommand(std::make_unique<HelpCommand>(this));
 }
 
 std::string CommandParser::parse(char* command) {
@@ -61,4 +63,12 @@ std::string CommandParser::parse(char* command) {
 
     // Return the command output
     return response;
+}
+
+std::vector<std::string> CommandParser::getCommandList() const {
+    std::vector<std::string> commandList;
+    for (const auto& cmd : m_Commands) {
+        commandList.push_back(cmd->identifier);
+    }
+    return commandList;
 }

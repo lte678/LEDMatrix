@@ -23,6 +23,7 @@ public:
     CommandParser(MatrixManager *matrix);
 
     std::string parse(char *command);
+    std::vector<std::string> getCommandList() const;
 };
 
 #endif

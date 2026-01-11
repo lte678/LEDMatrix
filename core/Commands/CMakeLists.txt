@@ -1,4 +1,5 @@
 target_sources(matrix_core PRIVATE
+        HelpCommand.cpp
         ListCommand.cpp
         StartCommand.cpp
         StopCommand.cpp
