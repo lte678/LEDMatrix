@@ -6,10 +6,13 @@
 #define MATRIX_APPSCOMMAND_H
 
 #include "Command.h"
+#include "../MatrixManager.h"
 
 class AppsCommand : public Command {
+private:
+    MatrixManager *m_Matrix;
 public:
-    AppsCommand(MatrixManager *matrix) : Command("apps", matrix) {};
+    AppsCommand(MatrixManager *matrix) : Command("apps"), m_Matrix(matrix) {};
     std::string execute(std::vector<char*> params);
 };
 

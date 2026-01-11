@@ -7,10 +7,13 @@
 
 
 #include "Command.h"
+#include "../MatrixManager.h"
 
 class ResetCommand : public Command {
+private:
+    MatrixManager *m_Matrix;
 public:
-    ResetCommand(MatrixManager *matrix) : Command("reset", matrix) {};
+    ResetCommand(MatrixManager *matrix) : Command("reset"), m_Matrix(matrix) {};
     std::string execute(std::vector<char*> params);
 };
 

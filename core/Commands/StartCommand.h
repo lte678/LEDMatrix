@@ -6,10 +6,13 @@
 #define MATRIX_STARTCOMMAND_H
 
 #include "Command.h"
+#include "../MatrixManager.h"
 
 class StartCommand : public Command {
+private:
+    MatrixManager *m_Matrix;
 public:
-    StartCommand(MatrixManager *matrix) : Command("start", matrix) {};
+    StartCommand(MatrixManager *matrix) : Command("start"), m_Matrix(matrix) {};
     std::string execute(std::vector<char*> params);
 };
 

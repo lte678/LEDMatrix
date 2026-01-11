@@ -5,9 +5,12 @@
 #pragma once
 
 #include "Command.h"
+#include "../MatrixManager.h"
 
 class FpsCommand : public Command {
+private:
+    MatrixManager *m_Matrix;
 public:
-    FpsCommand(MatrixManager *matrix) : Command("fps", matrix) {};
+    FpsCommand(MatrixManager *matrix) : Command("fps"), m_Matrix(matrix) {};
     std::string execute(std::vector<char*> params);
 };

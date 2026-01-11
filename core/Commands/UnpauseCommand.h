@@ -6,10 +6,13 @@
 #define MATRIX_UNPAUSECOMMAND_H
 
 #include "Command.h"
+#include "../MatrixManager.h"
 
 class UnpauseCommand : public Command {
+private:
+    MatrixManager *m_Matrix;
 public:
-    UnpauseCommand(MatrixManager *matrix) : Command("unpause", matrix) {};
+    UnpauseCommand(MatrixManager *matrix) : Command("unpause"), m_Matrix(matrix) {};
     std::string execute(std::vector<char*> params);
 };
 

@@ -6,10 +6,13 @@
 #define MATRIX_STOPCOMMAND_H
 
 #include "Command.h"
+#include "../MatrixManager.h"
 
 class StopCommand : public Command {
+private:
+    MatrixManager *m_Matrix;
 public:
-    StopCommand(MatrixManager *matrix) : Command("stop", matrix) {};
+    StopCommand(MatrixManager *matrix) : Command("stop"), m_Matrix(matrix) {};
     std::string execute(std::vector<char*> params);
 };
 

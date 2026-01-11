@@ -8,13 +8,10 @@
 #include <string>
 #include <vector>
 
-#include "../MatrixManager.h"
-
 class Command {
 public:
-    explicit Command(std::string _identifier, MatrixManager *matrix) : identifier(std::move(_identifier)), m_Matrix(matrix) {};
+    explicit Command(std::string _identifier) : identifier(std::move(_identifier)) {};
     std::string identifier;
-    MatrixManager *m_Matrix;
     virtual std::string execute(std::vector<char*> params) = 0;
 };
 
