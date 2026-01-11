@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <unistd.h>
+#include <chrono>
 
 
 MatrixManager::MatrixManager(std::unique_ptr<Matrix> display, std::string appPath)
@@ -164,6 +165,8 @@ void MatrixManager::matrixLoop() {
 
     matrix_t blendedFrame;
     float frameTime;
+    auto nextFrameTime = std::chrono::high_resolution_clock::now();
+    
     while(g_ApplicationRunning) {
         m_FpsCounter.mark_frame();
         m_Display->setBrightness((uint8_t)m_Brightness.getValue());
@@ -194,7 +197,18 @@ void MatrixManager::matrixLoop() {
 
         blend_frames(blendedFrame, m_FadeIn, m_FreezeFrame, m_Canvas);
         m_Display->render(blendedFrame);
-        usleep(1e6 * frameTime);
+        
+        // Advance target time and sleep until then
+        nextFrameTime += std::chrono::microseconds{static_cast<long>(frameTime * 1e6)};
+        auto now = std::chrono::high_resolution_clock::now();
+        
+        if(now < nextFrameTime) {
+            auto sleepDuration = std::chrono::duration_cast<std::chrono::microseconds>(nextFrameTime - now);
+            usleep(sleepDuration.count());
+        } else {
+            // Make sure we dont accumulate lost time.
+            nextFrameTime = now;
+        }
     }
 
     stopMatrix();
