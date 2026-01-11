@@ -16,6 +16,7 @@
 #include "MatrixDefines.h"
 #include "Matrix.h"
 #include "MatrixApp.h"
+#include "FpsCounter.h"
 
 
 class MatrixManager : public PropertyInterface {
@@ -35,6 +36,8 @@ public:
     std::string getRunningApp() const;
     void stopApp();
     std::vector<std::string> getAppNames() const;
+
+    float getFps() const { return m_FpsCounter.get_fps(); }
 
     void matrixLoop();
 
@@ -66,6 +69,7 @@ private:
     std::atomic<bool> m_DrawPaused;
     std::mutex m_BrightnessLock;
     std::atomic<MatrixApp*> m_ActiveApp;
+    FpsCounter m_FpsCounter;
 
     IntProperty m_Brightness;
     FloatProperty m_CrossfadeTime;

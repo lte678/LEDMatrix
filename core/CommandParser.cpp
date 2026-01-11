@@ -3,7 +3,18 @@
 //
 
 #include "CommandParser.h"
+
+#include "Commands/ListCommand.h"
+#include "Commands/StartCommand.h"
+#include "Commands/StopCommand.h"
+#include "Commands/PauseCommand.h"
+#include "Commands/SetCommand.h"
+#include "Commands/AppsCommand.h"
+#include "Commands/UnpauseCommand.h"
+#include "Commands/ResetCommand.h"
 #include "Commands/ActiveCommand.h"
+#include "Commands/FpsCommand.h"
+
 #include <cstring>
 #include <memory>
 
@@ -18,6 +29,7 @@ CommandParser::CommandParser(MatrixManager *matrix) : m_PropTree("root"), m_Matr
     registerCommand(std::make_unique<ActiveCommand>(matrix));
     registerCommand(std::make_unique<UnpauseCommand>(matrix));
     registerCommand(std::make_unique<ResetCommand>(matrix));
+    registerCommand(std::make_unique<FpsCommand>(matrix));
 }
 
 std::string CommandParser::parse(char* command) {

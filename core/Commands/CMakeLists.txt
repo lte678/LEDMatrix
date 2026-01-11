@@ -7,4 +7,5 @@ target_sources(matrix_core PRIVATE
         ActiveCommand.cpp
         ResetCommand.cpp
         UnpauseCommand.cpp
-        PauseCommand.cpp)
+        PauseCommand.cpp
+        FpsCommand.cpp)

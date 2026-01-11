@@ -11,7 +11,7 @@
 
 MatrixManager::MatrixManager(std::unique_ptr<Matrix> display, std::string appPath)
     : m_Display(std::move(display)), m_AppPath(appPath), m_Canvas(), m_FreezeFrame(), m_FadeIn(1.0f),
-    m_ResetQueued(), m_DrawPaused(), m_ActiveApp(), m_Brightness("brightness", 150), m_CrossfadeTime("crossfade", 0.2), PropertyInterface("matrix") {
+    m_ResetQueued(), m_DrawPaused(), m_ActiveApp(), m_FpsCounter(), m_Brightness("brightness", 150), m_CrossfadeTime("crossfade", 0.2), PropertyInterface("matrix") {
 
     registerProperty(&m_Brightness);
     registerProperty(&m_CrossfadeTime);
@@ -165,6 +165,7 @@ void MatrixManager::matrixLoop() {
     matrix_t blendedFrame;
     float frameTime;
     while(g_ApplicationRunning) {
+        m_FpsCounter.mark_frame();
         m_Display->setBrightness((uint8_t)m_Brightness.getValue());
 
         if(m_ResetQueued) {
